@@ -1,0 +1,4 @@
+screen uwsgi --socket 127.0.0.1:4307 \
+--venv /home/student/projects/finalProject \
+--wsgi-file /home/student/projects/finalProject/finalProject/wsgi.py \
+--master

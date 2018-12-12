@@ -1,0 +1,20 @@
+{% extends "expense_tracker/base.html" %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+    {% if username_changed == True %}
+    <h2>Update Successful, Please log in again since username/password is modified.</h2>
+    {% endif %}
+    <h1>Welcome to the Expense Tracker App !</h1>
+    {% if user.is_authenticated %}
+    <h2>Hello {{ user.first_name }}</h2>
+	<ul>
+	 <li><a href= "{% url 'expense_tracker:settings' %}"> change info</a></li>
+	 <li><a href= "{% url 'expense_tracker:main' %}"> Go to main page</a></li>
+	</ul>
+    {% else %}
+        <h2>Register or Login if you'd like to</h2>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

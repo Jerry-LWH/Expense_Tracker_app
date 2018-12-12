@@ -1,0 +1,63 @@
+{% extends "expense_tracker/base.html" %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+    {% if username_changed == True %}
+    <h2>Update Successful, Please log in again since username/password is modified.</h2>
+    {% endif %}
+    <h1>Add/Edit Envelop</h1>
+    {% if user.is_authenticated %}
+    <ul>
+      <li><a href= "{% url 'expense_tracker:settings' %}"> change info</a></li>
+      <li><a href= "{% url 'expense_tracker:main' %}"> Go to main page</a></li>
+    </ul>
+    <!--adding envelop-->
+    
+    <div>
+      <h2>Monthly</h2>
+      <form method = "POST" action="{% url 'expense_tracker:envelop' %}">
+          {% csrf_token %}
+	  <ul>
+	    <li>Start on the
+	      <select name = "start_date">
+		<option value = 1> 1st </option>
+		<option value = 2> 2nd </option>
+		<option value = 3> 3rd </option>
+		{% for i in days %}
+		<option value={{i}}>{{i}}th</option> 
+		{% endfor %}
+	      </select>
+	    </li>
+	    <li>
+              Gas<input type = "text" name="gas" value = {{values.0}} >
+            </li>
+	    <li>
+              Grocery<input type = "text" name="grocery" value={{values.1}}>
+            </li>
+	    <li>
+              Dinning<input type = "text" name="dinning" value={{values.2}}>
+            </li>
+	    <li>
+              Housing/Ultility<input type = "text" name="housing_utility" value={{values.3}} >
+            </li>
+	    <li>
+              Healthcare<input type = "text" name="health_care" value={{values.4}}>
+            </li>
+	    <li>
+              Entertainment<input type = "text" name="entertainment" value = {{values.5}} >
+            </li>
+	    <li>
+              Other<input type = "text" name="other" value ={{values.6}}>
+            </li>
+	    
+	  </ul>
+	  <button type="submit" name="submit">Submit </button>
+      </form>
+    </div>
+    
+    {% else %}
+        <h2>Register or Login if you'd like to</h2>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

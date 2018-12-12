@@ -1,0 +1,164 @@
+{% extends 'expense_tracker/base.html' %}
+{% block body_block %}
+    <div class="content">
+      <h1>Schema</h1>
+      <p>There are 13 tables in this MySQL database and 10 were automatically created by
+        Django (u da best). The first couple of tables store authentication data (i.e. permissions)
+        on the users and groups. There are a few that logs the user's sessions and
+        migration history. The more relevant ones are expense_tracker_envelop, 
+	expense_tracker_transactions, and expense_tracker_userprofileinfo
+        and they store the transactions and evelops the user created.<p>
+      <p><strong>auth_group</strong></p>
+      <pre>
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(80) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>auth_group_permissions</strong></p>
+      <pre>
++---------------+---------+------+-----+---------+----------------+
+| Field         | Type    | Null | Key | Default | Extra          |
++---------------+---------+------+-----+---------+----------------+
+| id            | int(11) | NO   | PRI | NULL    | auto_increment |
+| group_id      | int(11) | NO   | MUL | NULL    |                |
+| permission_id | int(11) | NO   | MUL | NULL    |                |
++---------------+---------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>auth_permission</strong></p>
+      <pre>
++-----------------+--------------+------+-----+---------+----------------+
+| Field           | Type         | Null | Key | Default | Extra          |
++-----------------+--------------+------+-----+---------+----------------+
+| id              | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name            | varchar(255) | NO   |     | NULL    |                |
+| content_type_id | int(11)      | NO   | MUL | NULL    |                |
+| codename        | varchar(100) | NO   |     | NULL    |                |
++-----------------+--------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>auth_user</strong></p>
+      <pre>
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| id           | int(11)      | NO   | PRI | NULL    | auto_increment |
+| password     | varchar(128) | NO   |     | NULL    |                |
+| last_login   | datetime(6)  | YES  |     | NULL    |                |
+| is_superuser | tinyint(1)   | NO   |     | NULL    |                |
+| username     | varchar(150) | NO   | UNI | NULL    |                |
+| first_name   | varchar(30)  | NO   |     | NULL    |                |
+| last_name    | varchar(150) | NO   |     | NULL    |                |
+| email        | varchar(254) | NO   |     | NULL    |                |
+| is_staff     | tinyint(1)   | NO   |     | NULL    |                |
+| is_active    | tinyint(1)   | NO   |     | NULL    |                |
+| date_joined  | datetime(6)  | NO   |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>auth_user_groups</strong></p>
+      <pre>
++----------+---------+------+-----+---------+----------------+
+| Field    | Type    | Null | Key | Default | Extra          |
++----------+---------+------+-----+---------+----------------+
+| id       | int(11) | NO   | PRI | NULL    | auto_increment |
+| user_id  | int(11) | NO   | MUL | NULL    |                |
+| group_id | int(11) | NO   | MUL | NULL    |                |
++----------+---------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>auth_user_user_permissions</strong></p>
+      <pre>
++---------------+---------+------+-----+---------+----------------+
+| Field         | Type    | Null | Key | Default | Extra          |
++---------------+---------+------+-----+---------+----------------+
+| id            | int(11) | NO   | PRI | NULL    | auto_increment |
+| user_id       | int(11) | NO   | MUL | NULL    |                |
+| permission_id | int(11) | NO   | MUL | NULL    |                |
++---------------+---------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>django_admin_log</strong></p>
+      <pre>
++-----------------+----------------------+------+-----+---------+----------------+
+| Field           | Type                 | Null | Key | Default | Extra          |
++-----------------+----------------------+------+-----+---------+----------------+
+| id              | int(11)              | NO   | PRI | NULL    | auto_increment |
+| action_time     | datetime(6)          | NO   |     | NULL    |                |
+| object_id       | longtext             | YES  |     | NULL    |                |
+| object_repr     | varchar(200)         | NO   |     | NULL    |                |
+| action_flag     | smallint(5) unsigned | NO   |     | NULL    |                |
+| change_message  | longtext             | NO   |     | NULL    |                |
+| content_type_id | int(11)              | YES  | MUL | NULL    |                |
+| user_id         | int(11)              | NO   | MUL | NULL    |                |
++-----------------+----------------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>django_content_type</strong></p>
+      <pre>
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| id        | int(11)      | NO   | PRI | NULL    | auto_increment |
+| app_label | varchar(100) | NO   | MUL | NULL    |                |
+| model     | varchar(100) | NO   |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>django_migrations</strong></p>
+      <pre>
++---------+--------------+------+-----+---------+----------------+
+| Field   | Type         | Null | Key | Default | Extra          |
++---------+--------------+------+-----+---------+----------------+
+| id      | int(11)      | NO   | PRI | NULL    | auto_increment |
+| app     | varchar(255) | NO   |     | NULL    |                |
+| name    | varchar(255) | NO   |     | NULL    |                |
+| applied | datetime(6)  | NO   |     | NULL    |                |
++---------+--------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>django_session</strong></p>
+      <pre>
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| session_key  | varchar(40) | NO   | PRI | NULL    |       |
+| session_data | longtext    | NO   |     | NULL    |       |
+| expire_date  | datetime(6) | NO   | MUL | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+      </pre>
+      <p><strong>expense_tracker_envelop</strong></p>
+      <pre>
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| id        | int(11)      | NO   | PRI | NULL    | auto_increment |
+| start_day | int(11)      | NO   |     | NULL    |                |
+| category  | varchar(200) | NO   |     | NULL    |                |
+| amounts   | int(11)      | NO   |     | NULL    |                |
+| user_id   | int(11)      | NO   |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>expense_tracker_transactions</strong></p>
+      <pre>
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| date        | date         | NO   |     | NULL    |                |
+| category    | varchar(200) | NO   |     | NULL    |                |
+| payee       | varchar(200) | NO   |     | NULL    |                |
+| description | varchar(200) | NO   |     | NULL    |                |
+| amounts     | int(11)      | NO   |     | NULL    |                |
+| user_id     | int(11)      | NO   |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+      </pre>
+      <p><strong>expense_tracker_userprofileinfo</strong></p>
+      <pre>
++----------------+--------------+------+-----+---------+----------------+
+| Field          | Type         | Null | Key | Default | Extra          |
++----------------+--------------+------+-----+---------+----------------+
+| id             | int(11)      | NO   | PRI | NULL    | auto_increment |
+| portfolio_site | varchar(200) | NO   |     | NULL    |                |
+| profile_pic    | varchar(100) | NO   |     | NULL    |                |
+| user_id        | int(11)      | NO   | UNI | NULL    |                |
+| activation_key | varchar(40)  | NO   |     | 0       |                |
++----------------+--------------+------+-----+---------+----------------+
+      </pre>
+    </div>
+{% endblock %}

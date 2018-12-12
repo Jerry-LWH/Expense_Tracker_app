@@ -1,0 +1,33 @@
+{% extends "expense_tracker/base.html" %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Account Settings!</h1>
+    {% if user.is_authenticated %}
+        <h2>Hello {{ user.first_name }}</h2>
+	<a href= "{% url 'expense_tracker:main' %}">Go to Main Page</a>
+	{% if method == 'POST' %}
+	   {% if updated == True %}
+	     <h1>Update successful</h1>
+	   {% elif invalid_username == True  %}
+	     <h1>Username exist</h1>
+	   {% else %}
+	     <h1>please enter at least one value </h1>
+           {% endif %}
+	{% endif %}     
+        <form method="post" action="{% url 'expense_tracker:settings' %}">
+          {% csrf_token %}
+           <label for="lastname">Enter new First name:</label>
+          <input type="text" name="firstname" value={{user.first_name}}>
+          <label for="lastname">Enter new last name:</label>
+          <input type="text" name="lastname" value={{user.last_name}}>
+          <label for="username">Enter new user name:</label>
+          <input type="text" name="username" >
+          <label for="password">Enter new password:</label>
+          <input type="text" name="password">
+          <input type="submit" name="submit" value="submit">
+        </form>
+	{% endif%}
+  </div>
+</div>
+{% endblock %}

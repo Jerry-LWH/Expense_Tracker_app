@@ -1,0 +1,17 @@
+# dappx/forms.py
+from django import forms
+from expense_tracker.models import UserProfileInfo
+from django.contrib.auth.models import User
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+    email = forms.CharField()
+    first_name=forms.CharField()
+    first_name=forms.CharField()
+    class Meta():
+        model = User
+        fields = ('first_name','last_name','username','password','email')
+
+class UserProfileInfoForm(forms.ModelForm):
+    class Meta():
+        model = UserProfileInfo
+        fields = ('portfolio_site','profile_pic')

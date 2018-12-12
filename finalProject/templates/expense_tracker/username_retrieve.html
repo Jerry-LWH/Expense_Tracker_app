@@ -1,0 +1,24 @@
+{% extends "expense_tracker/base.html" %}
+{% load staticfiles %}
+{% block body_block %}
+  <div class="container">
+    <div class="jumbotron">
+      {% if method %}
+        <form method="post" action="{% url 'expense_tracker:username_retrieve' %}">
+	  {% csrf_token %}
+	  <label for="email">Please enter your email:</label>
+	  <input type="text" name="email">
+	  <input type="submit" name="submit" value="submit">
+	</form>
+
+      {% else %}
+	{% if exist %}
+           <p>Your username has been sent to you email</p>
+	{% else %}   
+	   <p> No account associated with this email </p>
+	{% endif %}
+   
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

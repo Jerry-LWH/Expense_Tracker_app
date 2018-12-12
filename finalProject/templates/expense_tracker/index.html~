@@ -1,0 +1,43 @@
+{% extends "expense_tracker/base.html" %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+    {% if username_changed == True %}
+    <h2>Update Successful, Please log in again since username/password is modified.</h2>
+    {% endif %}
+    <center><h1>Expense Tracker App</h1></center>
+    {% if user.is_authenticated %}
+    <h2>Hello {{ user.first_name }}</h2>
+	<ul>
+	 <li><a href= "{% url 'expense_tracker:settings' %}"> Change Info</a></li>
+	 <li><a href= "{% url 'expense_tracker:main' %}"> Go to main page</a></li>
+	</ul>
+    {% else %}
+	<center><h2>Keep track of your spending to stay in full control of your finances</h2></center>
+        <dix id="joinLink">
+	  <center><a href="http://172.19.50.169/finalProject/register/"> Join Today!</a></center>
+	</div>
+  <hr>
+  <p>
+    It is a stressful situation to overspend especially for college students and young adults, therefore it is very important to keep track of your spending. This budget tracking application will help you manage your finances easier then ever. You will be able to create a budget for different categories, log and track their purchases/expenses, and view the amount you’ve spent so far in different categories.
+  </p>
+  <hr>
+	<table>
+	  <tr>
+	    <th>
+	      <img src="static/expense_tracker/FinalSummary.png" alt="Budget Summary">
+	    </th>
+	    <th>
+	      <img src="static/expense_tracker/FinalTransaction.png" alt="Transaction List">
+	    </th>
+	  </tr>
+	  <tr>
+	    <td><h3>Create a budget</h3></td>
+	    <td><h3>Log and track expenses</h3></tr>
+	  </tr>
+	</table>
+  <hr>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+h1{
+    color:red;
+}
+#payrolls {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+
+#payrolls td, #payrolls th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#payrolls tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+#payrolls tr{
+    background-color:white;
+}
+
+#payrolls tr:hover {
+    background-color: #ddd;
+}
+
+#payrolls th:hover{
+    background-color:#b5e7a0;
+}
+
+h1{
+    color:red;
+}
+
+

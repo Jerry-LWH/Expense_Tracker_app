@@ -1,0 +1,198 @@
+{% extends "expense_tracker/base.html" %}
+{% block body_block %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<link href="/finalProject/static/expense_tracker/style.css" rel="styleshee" type = "text/css"/>
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Main Page</h1>
+    {% if user.is_authenticated %}
+    <h2>Hello {{ user.first_name }}</h2>
+        <ul>
+         <li><a href= "{% url 'expense_tracker:settings' %}"> Change Info</a></li>
+	 <li><a href= "{% url 'expense_tracker:envelop' %}"> Add/Edit Envelop</a></li>
+        </ul>
+	<!--alart content-->
+	{% if alert == True %}
+	<div>
+	  <h2>----Alert---</h2>
+	  <h3>Watch out for your spendings, you have met or exceed 90% of the following category</h3>
+	  <ul>
+	    {% for i in alert_categories %}
+	    <li>{{i}}</li>
+	    {% endfor %}
+	  </ul>
+	</div>
+	{% endif %}
+	<!--summary content-->
+	<h3>Expense Summary</h3>
+	<ul>
+	  <li>Total Funds--------------  ${{totalFund}}</li>
+	  <li>Available Funds----------  ${{availableFund}}</li>
+	  <li>Gas----------------------  ${{gas_sum}} available out of total ${{gas_v}}</li>
+	  <li>Grocery------------------  ${{grocery_sum}} available out of total ${{grocery_v}}</li>
+	  <li>Dining------------------  ${{dinning_sum}} available out of total ${{dinning_v}}</li>
+	  <li>Housing/Utility----------  ${{housing_sum}} available out of total ${{housing_v}}</li>
+	  <li>Healthcare --------------  ${{healthcare_sum}} available out of total ${{healthcare_v}}</li>
+	  <li>Entertainment------------  ${{entertainment_sum}} available out of total ${{entertainment_v}}</li>
+	  <li>Other--------------------  ${{other_sum}} available out of total ${{other_v}}</li>
+	</ul>
+
+
+	<!--adding/deleting transactions-->
+	<form method = "POST" action="{% url 'expense_tracker:main' %}">
+	  {% csrf_token %}
+	  <h3>Add Transactions</h3>
+	  <ul>
+	    <li>
+	      Date<input name = "date" id = "datepicker" type = "text" width="276" required>
+	      <script>
+		$('#datepicker').datepicker({dateFormat: 'yy-mm-dd'});
+	      </script>
+	    </li>
+	    <li>
+	      Payee<input type = "text" name="payee" required>
+	    </li>
+	    <li>Category
+	       <select name = "category">
+		 <option value="gas">Gas</option>
+		 <option value="grocery">Grocery</option>
+		 <option value="dinning">Dinning</option>
+		 <option value="housing_utility">Housing Utility</option>
+		 <option value="health_care">Health Care</option>
+		 <option value="entertainment">Entertainment</option>
+		 <option value="other">Other</option>
+	       </select>
+	    </li>
+	    <li>
+	     Amount<input type = "text" name="amount" required>
+	    </li>
+	    <li>
+	     Description<input type = "text" name="description" >
+	    </li>
+	  </ul>
+	<button id="submit_button" type="submit" name="submit" value="submit">Submit </button>
+	</form>
+	{% if method == 'POST' and valid_amount == False  %}
+	  <p> Invalid amount entered </p>
+	{% endif %}
+	
+	<!--displaying transactions-->
+	<div>
+	  <h2>Transaction List</h2>
+	  
+	  <table id="payrolls">
+	    <thead>
+	      <tr>
+		<th>Date</th><p>     </p>
+		<th>Category</th><p>     </p>
+		<th>Payee</th><p>      </p>
+		<th>Amount</th><p>      </p>
+		<th>Description</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% if transactions %}
+	      {% for transaction in transactions %}
+	      <tr>
+		<td>{{transaction.date}}</td>
+		<td>{{transaction.category}}</td>
+		<td>{{transaction.payee}}</td>
+		<td>{{transaction.amounts}}</td>
+		<td>{{transaction.description}}</td>
+		<td>
+		  <form method = "POST" action="{% url 'expense_tracker:main' %}">
+		    {% csrf_token %}
+		    <button type="submit" value={{transaction.id}} name="delete_button" >Delete</button>
+		  </form>
+		</td>
+	      </tr>
+	      {% endfor %}
+	      {% endif%}
+	    </tbody>
+	  </table>
+	</div>
+	
+	<!--<button id = "show_transactions" value="submit">Show Transactions that support ajax sorting</button>-->
+	<h2><button id = "show_transactions" value="submit">Click to see transactions like that supports AJAX sorting</button></h2>
+	<tr><button  class = "sorting" value= "id" >date</button>
+	<button class = "sorting" value= "category">category</button>
+	<button class = "sorting" value= "payee">payee</button>
+	<!--<button class ="sorting" value= "amounts">Amount</button>-->
+	<button class ="sorting" value ="description">description</button></tr>
+	<button class ="sorting" value= "amounts">amounts</button>
+	<div id = "outputDiv">
+	
+	</div>
+
+    {% else %}
+        <h2>Register or Login if you'd like to</h2>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  var page = 1;
+  var column = "fiscal_year";
+  function ajax_stuff() {                                      //function called ajax_stuff()
+      
+      var httpRequest;
+      var output = document.getElementById("outputDiv");
+      var button = document.getElementById("submit_button");
+      var button2 = document.getElementById("show_transactions");
+      var sortingButtons = document.getElementsByClassName("sorting");
+
+      function makeRequest(val) {                                 //subfunction called makeRequest()
+         console.log("val is"+val); 
+         httpRequest = new XMLHttpRequest();                   //make XMLHttpRequest object, MUST DO!
+         if (!httpRequest) {                                    // if cannot make XMLhttp object
+           alert('Giving up :( Cannot create an XMLHTTP instance');
+            return false;
+         } // if
+
+         httpRequest.onreadystatechange = changeContents;       //tell XML object which function handles the response when request changes state
+                                                                //can  be placed anywhere even in the last line;
+           //constructing querying string
+         var qs = "http://172.19.50.169/finalProject/ajax/?";
+         qs +="post="+val;
+
+
+         console.log(qs);  //print out qs to console
+
+         httpRequest.open('GET',qs ,true);        //open the request for POST
+         httpRequest.send();                      //send request with query string
+      } // makeRequest
+
+      function changeContents() {
+         if (httpRequest.readyState === XMLHttpRequest.LOADING) {
+            output.innerHTML = 'Loading...';
+         }else if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            if(httpRequest.status === 200) {
+                output.innerHTML = httpRequest.responseText;;
+            }else {
+                output.innerHTML = 'There was a problem with the request.';
+            } // if
+         }// if
+      } // changeContents
+      
+      for (var i = 0; i < sortingButtons.length; i++) {
+        var keyword = sortingButtons[i].value;
+	console.log(sortingButtons[i].innerHTML);		  
+        sortingButtons[i].onclick= function(){makeRequest(this.innerHTML)};   //must do it like this or else it calls the function automatically
+      } 
+     
+      button.onclick = function(){makeRequest(this.value)};
+      button2.onclick = function(){makeRequest(this.value)};
+      
+  } // ajax_stuff
+
+ajax_stuff();
+</script>
+
+
+
+
+
+{% endblock %}
